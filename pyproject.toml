@@ -1,0 +1,15 @@
+[project]
+name = "assignment-2"
+version = "0.1.0"
+description = "Agentic Workflow and AI Agent learning project"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "isort>=6.0.1",
+    "langfuse>=3.3.2",
+    "loguru>=0.7.3",
+    "openai>=1.102.0",
+    "python-dotenv>=1.1.1",
+    "ruff>=0.12.11",
+    "tavily-python>=0.7.11",
+]
