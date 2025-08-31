@@ -2,8 +2,7 @@ import os
 import time
 
 from loguru import logger
-from utils import (cv_collection, generate_file_name, mistral_client,
-                   openai_client)
+from utils import cv_collection, mistral_client, openai_client
 
 
 def create_conversion_prompt(markdown_content) -> str:
@@ -154,11 +153,12 @@ def process_cv_ocr(file_path: str, file_name: str = "cv.pdf") -> None:
             ids=[f"cv_extraction_page_{page_num}"],
         )
 
-    result_file_name = generate_file_name(f"cv_data_{time.strftime('%Y-%m-%d')}")
-    result_dir = "results/cv"
-    if not os.path.exists(result_dir):
-        os.makedirs(result_dir)
-    with open(f"{result_dir}/{result_file_name}.md", "w", encoding="utf-8") as file:
+    timestamp = int(time.time() * 1000)
+    result_file_name = f"cv_data-{timestamp}.md"
+    result_file_path = f"results/cv/{result_file_name}"
+
+    os.makedirs("results", exist_ok=True)
+    with open(result_file_path, "w", encoding="utf-8") as file:
         file.write("# Structured CV Data for Salary Analysis\n\n")
         file.write(all_cv_data)
 

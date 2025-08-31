@@ -8,26 +8,25 @@ from tools.process_cv_ocr import process_cv_ocr
 from tools.search_salary_info import search_salary_info
 from utils import cv_collection
 
-
 SYSTEM_PROMPT = """
-You are a CV to Salary Analysis Agent.
+    You are a CV to Salary Analysis Agent.
 
-WORKFLOW:
-1. Use get_cv_data to retrieve CV information
-2. Extract the primary job role from the CV data  
-3. Use search_salary_info to find salary data for that role
-4. Provide a focused salary analysis with:
-    - Primary salary range with currency and location
-    - Experience level alignment
-    - Key salary factors from CV skills
-    - Source links for verification
+    WORKFLOW:
+    1. Use get_cv_data to retrieve CV information
+    2. Extract the primary job role from the CV data  
+    3. Use search_salary_info to find salary data for that role
+    4. Provide a focused salary analysis with:
+        - Primary salary range with currency and location
+        - Experience level alignment
+        - Key salary factors from CV skills
+        - Source links for verification
 
-RULES:
-- Always get CV data first
-- Focus on concrete salary figures
-- Include source URLs
-- Keep analysis concise and actionable
-"""
+    RULES:
+    - Always get CV data first
+    - Focus on concrete salary figures
+    - Include source URLs
+    - Keep analysis concise and actionable
+    """
 
 salary_agent = Agent(
     name="CV Salary Analyzer",
@@ -37,14 +36,14 @@ salary_agent = Agent(
 )
 
 
-def check_cv_data(cv_file_name: str) -> None:
-    """Ensure CV data is available in the collection, process PDF if needed"""
+def check_cv_data(cv_path_name: str) -> None:
+    """Ensure CV data is available in the collection, process PDF if doesn't exist"""
     try:
         results = cv_collection.get()
         if not results["documents"]:
             logger.info("No CV data found, processing PDF...")
-            if os.path.exists(cv_file_name):
-                process_cv_ocr(cv_file_name)
+            if os.path.exists(cv_path_name):
+                process_cv_ocr(cv_path_name)
                 logger.info("✅ CV processed successfully")
             else:
                 logger.error("❌ cv.pdf not found")
@@ -55,9 +54,9 @@ def check_cv_data(cv_file_name: str) -> None:
 async def main() -> None:
     """Main function to run CV to salary analysis"""
     logger.info("🚀 Starting CV to Salary Analysis")
-    cv_file_name = "cv.pdf"
+    cv_path_name = "cv.pdf"
 
-    check_cv_data(cv_file_name)
+    check_cv_data(cv_path_name)
 
     runner = await Runner.run(
         starting_agent=salary_agent,
@@ -67,7 +66,7 @@ async def main() -> None:
     result = runner.final_output
     timestamp = int(time.time() * 1000)
     result_file_name = f"salary-analysis-{timestamp}.md"
-    result_file_path = f"results/{result_file_name}"
+    result_file_path = f"results/salaries/{result_file_name}"
 
     os.makedirs("results", exist_ok=True)
     with open(result_file_path, "w") as f:

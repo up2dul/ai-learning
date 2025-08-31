@@ -1,6 +1,4 @@
 import os
-import re
-import time
 
 import chromadb
 from chromadb.utils.embedding_functions import OpenAIEmbeddingFunction
@@ -25,17 +23,3 @@ except Exception:
     cv_collection = chroma_client.create_collection(
         name="cv_data", embedding_function=ef
     )
-
-
-def slugify(text: str) -> str:
-    """Convert a string to a slug"""
-    text = text.lower()
-    text = re.sub(r"[^\w\s-]", "", text)
-    text = re.sub(r"[-\s]+", "-", text)
-    return text
-
-
-def generate_file_name(text: str) -> str:
-    """Generate a file name with a timestamp"""
-    current_date = str(int(round(time.time() * 1000)))
-    return f"{text}-{current_date}"
