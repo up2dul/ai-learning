@@ -1,7 +1,7 @@
 from loguru import logger
 
 
-def broadcast(message: str) -> None:
+def broadcast(message: str) -> str:
     """Broadcast a message to the user"""
     logger.info(message)
     return "Message broadcasted!"
